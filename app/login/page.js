@@ -7,22 +7,31 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // send email and password; on success the API sets the token cookie
   const handleLogin = async (event) => {
     event.preventDefault();
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
+    setMessage("");
+    setLoading(true);
 
-    if (response.ok) {
-      // full page load so proxy.js checks the cookie just received
-      window.location.href = "/dashboard";
-    } else {
-      setMessage(data.message); // e.g. "Invalid email or password"
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        window.location.href = "/dashboard";
+      } else {
+        setMessage(data.message || `Login failed (${response.status})`);
+      }
+    } catch (error) {
+      setMessage("Network or server error while logging in.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +53,9 @@ export default function LoginPage() {
           placeholder="Password"
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
       {message && <p className="error">{message}</p>}
       <p>
