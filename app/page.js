@@ -4,11 +4,11 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="auth-box">
-      <h1>RBAC Demo</h1>
+      <h1>Campus Stray Cat Care&Community</h1>
       <ul>
         <li><Link href="/register">Register</Link></li>
         <li><Link href="/login">Login</Link></li>
-        <li><Link href="/dashboard">Dashboard (members only)</Link></li>
+        <li><Link href="/dashboard">Dashboard (Campus Feed)</Link></li>
       </ul>
     </div>
   );
