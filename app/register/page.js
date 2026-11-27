@@ -9,7 +9,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  // send the form data to the API; on success log in and go to the feed
   const handleRegister = async (event) => {
     event.preventDefault();
     setMessage("");
@@ -22,7 +21,6 @@ export default function RegisterPage() {
     const data = await response.json().catch(() => ({}));
 
     if (response.ok) {
-      // log in automatically with the same email and password
       const loginResponse = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -35,7 +33,7 @@ export default function RegisterPage() {
         window.location.href = "/login";
       }
     } else {
-      setMessage(data.message || "Registration failed"); // e.g. "Email already registered"
+      setMessage(data.message || "Registration failed");
     }
   };
 
@@ -70,4 +68,6 @@ export default function RegisterPage() {
       <p>
         Already have an account? <Link href="/login">Login</Link>
       </p>
-       
+    </div>
+  );
+}
