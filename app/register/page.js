@@ -1,39 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  // send the form data to the API; on success go to login
   const handleRegister = async (event) => {
     event.preventDefault();
-    setMessage("");
-
     const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fullname, email, password }),
     });
-    const data = await response.json().catch(() => ({}));
+    const data = await response.json();
 
     if (response.ok) {
-      const loginResponse = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (loginResponse.ok) {
-        window.location.href = "/news";
-      } else {
-        window.location.href = "/login";
-      }
+      router.push("/login");
     } else {
-      setMessage(data.message || "Registration failed");
+      setMessage(data.message); // e.g. "Email already registered"
     }
   };
 
