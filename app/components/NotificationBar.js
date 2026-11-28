@@ -12,21 +12,21 @@ export default function NotificationBar({ user, onOpenPost }) {
   const [seenId, setSeenId] = useState(0);
   const [expanded, setExpanded] = useState(false);
 
-  const isAdmin = !!user && user.role === "admin";
-  const storageKey = user ? `cp_notif_seen_${user.id}` : "";
+  const userId = user ? user.id : null;
+  const storageKey = userId ? `cp_notif_seen_${userId}` : "";
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!storageKey) return;
     try {
       const stored = Number(localStorage.getItem(storageKey) || 0);
       setSeenId(Number.isFinite(stored) ? stored : 0);
     } catch {
       setSeenId(0);
     }
-  }, [isAdmin, storageKey]);
+  }, [storageKey]);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!userId) return;
     let active = true;
 
     const load = () => {
@@ -44,9 +44,9 @@ export default function NotificationBar({ user, onOpenPost }) {
       active = false;
       clearInterval(timer);
     };
-  }, [isAdmin]);
+  }, [userId]);
 
-  if (!isAdmin) return null;
+  if (!userId) return null;
 
   const unread = items.filter((item) => item.id > seenId);
   if (unread.length === 0) return null;
@@ -129,7 +129,7 @@ export default function NotificationBar({ user, onOpenPost }) {
           </span>
           <div>
             <strong style={{ color: "#7c2d12" }}>
-              {unread.length} new {unread.length === 1 ? "mention" : "mentions"} for Admin
+              {unread.length} new {unread.length === 1 ? "mention" : "mentions"} for you
             </strong>
             <div style={{ fontSize: "0.85rem", color: "#431407" }}>
               {latest.author_name + " on " + latest.post_title + ": " + preview(latest.comment_text)}
