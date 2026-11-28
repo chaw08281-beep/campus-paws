@@ -24,7 +24,7 @@ export default function LoginPage() {
       const data = await response.json().catch(() => ({}));
 
       if (response.ok) {
-        window.location.href = "/news";
+        window.location.href = "/";
       } else {
         setMessage(data.message || `Login failed (${response.status})`);
       }
@@ -43,4 +43,24 @@ export default function LoginPage() {
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-  
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Password"
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+      {message && <p className="error">{message}</p>}
+      <p>
+        No account yet? <Link href="/register">Register</Link>
+      </p>
+    </div>
+  );
+}
